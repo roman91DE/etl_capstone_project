@@ -132,7 +132,6 @@ def extract_data_from_fixed_width():
     )
 
 
-
 def consolidate_data():
     """
     Consolidates data from three different CSV files into a single CSV file.
@@ -168,18 +167,24 @@ def consolidate_data():
         "Tollplaza id",
         "Tollplaza code",
         "Type of Payment code",
-        "Vehicle Code"
+        "Vehicle Code",
     ]
-
 
     merged_df = pd.concat([df1, df2, df3], axis=1).loc[:, headers]
 
     merged_df.to_csv(project_path / "extracted_data.csv", index=False)
 
 
+def transform_data() -> None:
+    """
+    Transforms the extracted data by converting the 'Vehicle type' column to uppercase.
+    Saves the transformed data to a new CSV file in the staging directory.
+    """
+    extracted_data = project_path / "extracted_data.csv"
 
-
-
+    df = pd.read_csv(extracted_data)
+    df.loc[:, "Vehicle type"] = df["Vehicle type"].str.upper()
+    df.to_csv(project_path / "staging" / "transformed_data.csv", index=False)
 
 
 default_args = {
@@ -200,9 +205,34 @@ with DAG(
     start_date=datetime(2023, 1, 1),
 ) as dag:
 
-    task_1 = PythonOperator(
-        task_id="unzip_task",
+    task1 = PythonOperator(
+        task_id="unzip_data",
         python_callable=unzip_data,
     )
 
-    task_1
+    task2 = PythonOperator(
+        task_id="extract_data_from_csv",
+        python_callable=extract_data_from_csv,
+    )
+
+    task3 = PythonOperator(
+        task_id="extract_data_from_tsv",
+        python_callable=extract_data_from_tsv,
+    )
+
+    task4 = PythonOperator(
+        task_id="extract_data_from_fixed_width",
+        python_callable=extract_data_from_fixed_width,
+    )
+
+    task5 = PythonOperator(
+        task_id="consolidate_data",
+        python_callable=consolidate_data,
+    )
+
+    task6 = PythonOperator(
+        task_id="transform_data",
+        python_callable=transform_data,
+    )
+
+    task1 >> task2 >> task3 >> task4 >> task5 >> task6
