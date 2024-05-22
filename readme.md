@@ -1,14 +1,11 @@
 # ETL Pipeline using Apache Airflow and Kafka
 
-This repository contains the code for a modern ETL pipeline built using Apache Airflow and Kafka as part of the IBM Professional Data Engineer Certification capstone project.
-
-## Components
-
-- **Apache Kafka**: For real-time data streaming and ingestion.
-- **Apache Airflow**: For managing and orchestrating ETL workflows.
+This repository contains the code for a modern ETL pipeline built using Apache Airflow as part of the IBM Professional Data Engineer Certification capstone project.
 
 
-### Apache Airflow Pipeline
+
+
+## Apache Airflow Pipeline
 
 The ETL pipeline consists of the following tasks:
 
@@ -19,7 +16,3 @@ The ETL pipeline consists of the following tasks:
 5. **consolidate_data**: Merges data from multiple sources into a single DataFrame.
 6. **transform_data**: Transforms the consolidated data and prepares it for loading into the data warehouse.
 
-
-### Apache Kafka
-
-...
